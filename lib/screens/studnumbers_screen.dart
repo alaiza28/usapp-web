@@ -24,6 +24,9 @@ class StudnumbersScreen extends StatelessWidget {
           StreamBuilder<List<StudentNumber>>(
             stream: context.watch<StudnumberProvider>().idnumbers,
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
               return ListView.builder(
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,

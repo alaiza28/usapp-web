@@ -1,28 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:web_tut/models/college.dart';
+import 'package:web_tut/models/course.dart';
 import 'package:web_tut/providers/college_provider.dart';
+import 'package:web_tut/providers/course_provider.dart';
+import 'package:web_tut/services/firestore_service.dart';
 
-class CollegesScreen extends StatelessWidget {
+class CourseScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  final courseCtrl = TextEditingController();
   final collegeCtrl = TextEditingController();
-  final campusCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          "Colleges",
+          "Courses",
           style: TextStyle(color: Colors.blue),
         ),
         elevation: 0,
       ),
       body: Stack(
         children: [
-          StreamBuilder<List<College>>(
-              stream: context.watch<CollegeProvider>().colleges,
+          StreamBuilder<List<Course>>(
+              stream: context.watch<CourseProvider>().courses,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -34,11 +39,11 @@ class CollegesScreen extends StatelessWidget {
                       return Card(
                         child: ListTile(
                           title: Text(
-                              snapshot.data![index].collegeName.toUpperCase()),
+                              snapshot.data![index].courseName.toUpperCase()),
                           subtitle: Row(
                             children: [
-                              Text('Campus: '),
-                              Text(snapshot.data![index].campus),
+                              Text('College: '),
+                              Text(snapshot.data![index].college),
                             ],
                           ),
                           trailing: IconButton(
@@ -64,7 +69,7 @@ class CollegesScreen extends StatelessWidget {
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 15, horizontal: 18),
                                             child: Text(
-                                              "Remove College",
+                                              "Remove Course",
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -97,7 +102,7 @@ class CollegesScreen extends StatelessWidget {
                                                 Expanded(
                                                   child: Container(
                                                     child: Text(
-                                                        "Do you really want to remove this College?"),
+                                                        "Do you really want to remove this Course?"),
                                                   ),
                                                 ),
                                                 SizedBox(),
@@ -111,12 +116,12 @@ class CollegesScreen extends StatelessWidget {
                                                       onPressed: () {
                                                         context
                                                             .read<
-                                                                CollegeProvider>()
-                                                            .removeCollege(
+                                                                CourseProvider>()
+                                                            .removeCourse(
                                                                 snapshot
                                                                     .data![
                                                                         index]
-                                                                    .collegeID);
+                                                                    .courseId);
                                                         Navigator.of(context,
                                                                 rootNavigator:
                                                                     true)
@@ -133,7 +138,7 @@ class CollegesScreen extends StatelessWidget {
                                                           ),
                                                         );
                                                         collegeCtrl.clear();
-                                                        campusCtrl.clear();
+                                                        courseCtrl.clear();
                                                       },
                                                       color: Colors.red,
                                                       child: Text("Remove"),
@@ -145,7 +150,7 @@ class CollegesScreen extends StatelessWidget {
                                                                     true)
                                                             .pop();
                                                         collegeCtrl.clear();
-                                                        campusCtrl.clear();
+                                                        courseCtrl.clear();
                                                       },
                                                       color: Colors.blue,
                                                       child: Text("Cancel"),
@@ -202,7 +207,7 @@ class CollegesScreen extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 15, horizontal: 18),
                                 child: Text(
-                                  "Add College",
+                                  "Add Course",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               )),
@@ -230,7 +235,7 @@ class CollegesScreen extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             TextFormField(
-                                              controller: campusCtrl,
+                                              controller: courseCtrl,
                                               decoration: InputDecoration(
                                                 enabledBorder:
                                                     OutlineInputBorder(
@@ -248,15 +253,15 @@ class CollegesScreen extends StatelessWidget {
                                                     EdgeInsets.symmetric(
                                                         horizontal: 20.0,
                                                         vertical: 10.0),
-                                                labelText: 'URS Campus',
+                                                labelText: 'College Name',
                                                 labelStyle: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                               onChanged: (String value) =>
                                                   context
-                                                      .read<CollegeProvider>()
-                                                      .changeCampus = value,
+                                                      .read<CourseProvider>()
+                                                      .changeCollege = value,
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
@@ -287,15 +292,15 @@ class CollegesScreen extends StatelessWidget {
                                                     EdgeInsets.symmetric(
                                                         horizontal: 20.0,
                                                         vertical: 10.0),
-                                                labelText: 'New College Name',
+                                                labelText: 'New Course Name',
                                                 labelStyle: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                               onChanged: (String value) =>
                                                   context
-                                                      .read<CollegeProvider>()
-                                                      .changeCollegename = value,
+                                                      .read<CourseProvider>()
+                                                      .changeCourseName = value,
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
@@ -317,8 +322,8 @@ class CollegesScreen extends StatelessWidget {
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              context.read<CollegeProvider>()
-                                                ..saveCollege();
+                                              context.read<CourseProvider>()
+                                                ..saveCourse();
                                               Navigator.of(context,
                                                       rootNavigator: true)
                                                   .pop();
@@ -333,7 +338,7 @@ class CollegesScreen extends StatelessWidget {
                                               );
                                             }
                                             collegeCtrl.clear();
-                                            campusCtrl.clear();
+                                            courseCtrl.clear();
                                           },
                                           child: Text("Add"),
                                         ),
@@ -343,7 +348,7 @@ class CollegesScreen extends StatelessWidget {
                                                     rootNavigator: true)
                                                 .pop();
                                             collegeCtrl.clear();
-                                            campusCtrl.clear();
+                                            courseCtrl.clear();
                                           },
                                           color: Colors.red,
                                           child: Text("Cancel"),
@@ -363,7 +368,7 @@ class CollegesScreen extends StatelessWidget {
                   elevation: 10,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Add College"),
+                    child: Text("Add Course"),
                   ),
                 ),
               ],

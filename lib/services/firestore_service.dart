@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:web_tut/models/college.dart';
+import 'package:web_tut/models/course.dart';
 import 'package:web_tut/models/student_number.dart';
 
 class FirestoreService {
@@ -48,5 +49,27 @@ class FirestoreService {
   //delete
   Future<void> removeCollege(String collegeID) {
     return _db.collection('colleges').doc(collegeID).delete();
+  }
+
+  //Courses
+  //get
+  Stream<List<Course>> getCourses() {
+    return _db.collection('courses').snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => Course.fromJson(doc.data())).toList());
+  }
+
+  //upsert
+  Future<void> setCourse(Course course) {
+    var options = SetOptions(merge: true);
+
+    return _db
+        .collection('courses')
+        .doc(course.courseId)
+        .set(course.toMap(), options);
+  }
+
+  //delete
+  Future<void> removeCourse(String courseID) {
+    return _db.collection('courses').doc(courseID).delete();
   }
 }

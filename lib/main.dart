@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:web_tut/mypage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:web_tut/providers/college_provider.dart';
+import 'package:web_tut/providers/course_provider.dart';
 import 'package:web_tut/providers/studnumber_provider.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => StudnumberProvider()),
         ChangeNotifierProvider(create: (_) => CollegeProvider()),
+        ChangeNotifierProvider(create: (_) => CourseProvider()),
       ],
       child: MaterialApp(
         title: 'UsApp Admin',

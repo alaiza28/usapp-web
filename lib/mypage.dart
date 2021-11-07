@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:web_tut/screens/colleges_screen.dart';
+import 'package:web_tut/screens/course_screen.dart';
 import 'package:web_tut/screens/studnumbers_screen.dart';
 import 'package:web_tut/screens/users_screen.dart';
 import 'package:web_tut/utils/vertical_tabs.dart';
@@ -116,9 +117,10 @@ class _MyPageState extends State<MyPage> {
           //   color: Colors.amber,
           // ),
           CollegesScreen(),
-          Container(
-            color: Colors.amberAccent,
-          ),
+          // Container(
+          //   color: Colors.amberAccent,
+          // ),
+          CourseScreen(),
         ],
       ),
     );
